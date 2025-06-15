@@ -1,0 +1,28 @@
+fever
+cough
+headache
+cold
+chest_pain
+nausea
+diarrhoea
+fatigue
+dizziness
+infection
+skin_rash
+asthma
+allergy
+diabetes
+hypertension
+vomiting
+fungal infection
+neck_pain
+weight_loss
+heart attack
+arthritis
+acne
+migraine
+chicken pox
+dengue
+common cold
+malaria
+joint_pain

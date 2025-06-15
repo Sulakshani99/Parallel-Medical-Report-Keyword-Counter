@@ -1,0 +1,28 @@
+fever: 1194
+cough: 564
+headache: 846
+cold: 234
+chest_pain: 270
+nausea: 558
+diarrhoea: 144
+fatigue: 1932
+dizziness: 258
+infection: 240
+skin_rash: 786
+asthma: 120
+allergy: 120
+diabetes: 120
+hypertension: 120
+vomiting: 1914
+fungal infection: 120
+neck_pain: 228
+weight_loss: 456
+heart attack: 120
+arthritis: 120
+acne: 120
+migraine: 120
+chicken pox: 120
+dengue: 120
+common cold: 120
+malaria: 120
+joint_pain: 690

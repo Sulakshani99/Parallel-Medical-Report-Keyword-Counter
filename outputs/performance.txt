@@ -1,0 +1,1 @@
+Serial version time: 0.007760 seconds	 No. of Processors: 1	 No. of Treads: 1 
