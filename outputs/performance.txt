@@ -1,3 +1,2 @@
-Serial version time: 0.008867 seconds	 No. of Processors: 1	 No. of Threads: 1
-OpenMP version time: 0.007989 seconds	 No. of Processors: 1	 No. of Threads: 4 
-MPI version time: 0.001600 seconds	 No. of Processors: 4	 No. of Threads: 1
+Serial version time: 0.008233 seconds	 No. of Processors: 1	 No. of Threads: 1
+OpenMP version time: 0.006934 seconds	 No. of Processors: 1	 No. of Threads: 4 
