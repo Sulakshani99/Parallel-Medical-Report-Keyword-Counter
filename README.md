@@ -24,7 +24,7 @@ This project implements a parallel processing solution to count keywords in medi
 └── keywords.txt             # List of keywords to search for
 ```
 
-## Prerequisites
+## Pre Requirements
 - GCC compiler
 - OpenMP support
 - MPI implementation (e.g., OpenMPI )
