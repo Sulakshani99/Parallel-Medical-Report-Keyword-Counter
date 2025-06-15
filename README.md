@@ -25,10 +25,10 @@ This project implements a parallel processing solution to count keywords in medi
 ```
 
 ## Pre Requirements
-- GCC compiler
-- OpenMP support
-- MPI implementation (e.g., OpenMPI )
-- Python 3.x (for running the scripts)
+- GCC compiler (gcc --version)
+- OpenMP support (gcc -fopenmp --version)
+- MPI implementation (e.g., OpenMPI ) (mpicc --version)
+- Python 3.x (for running the scripts) (python3 --version)
 
 ## Installation
 
