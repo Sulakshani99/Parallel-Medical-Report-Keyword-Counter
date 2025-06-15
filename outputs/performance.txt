@@ -1,2 +1,2 @@
-Serial version time: 0.007760 seconds	 No. of Processors: 1	 No. of Treads: 1 
 Serial version time: 0.008867 seconds	 No. of Processors: 1	 No. of Threads: 1
+OpenMP version time: 0.007516 seconds	 No. of Processors: 1	 No. of Threads: 4 
