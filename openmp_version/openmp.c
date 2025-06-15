@@ -46,13 +46,24 @@ int main() {
 
     double start = omp_get_wtime();
 
-    // Parallel keyword count
-    #pragma omp parallel for
-    for (size_t i = 0; i < totalReports; i++) {
-        for (int k = 0; k < totalKeywords; k++) {
-            if (strstr(reports[i], keywords[k]) != NULL) {
-                #pragma omp atomic
-                keywordCount[k]++;
+     // Get number of threads
+    #pragma omp parallel
+    {
+        #pragma omp single
+        num_threads = omp_get_num_threads();
+    }
+
+    // Process reports in parallel
+    #pragma omp parallel
+    {
+        int thread_id = omp_get_thread_num();
+        #pragma omp for
+        for (int i = 0; i < totalReports; i++) {
+            for (int k = 0; k < totalKeywords; k++) {
+                if (strstr(reports[i], keywords[k]) != NULL) {
+                    #pragma omp atomic
+                    keywordCount[k]++;
+                }
             }
         }
     }
