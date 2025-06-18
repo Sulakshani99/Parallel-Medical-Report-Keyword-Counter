@@ -5,27 +5,30 @@
 
 #define MAX_KEYWORDS 100
 #define MAX_LINE_LEN 1000
+#define MAX_KEYWORD_LENGTH 50
 
 int main() {
 
     int num_threads = 4;
-    omp_set_num_threads(num_threads); 	
+    omp_set_num_threads(num_threads); 
+    
+    double start = omp_get_wtime();	
 
     FILE *reportFile = fopen("../data/medical_reports.txt", "r");
     FILE *keywordFile = fopen("../keywords.txt", "r");
 
     if (!reportFile || !keywordFile) {
-        printf("Cannot open input files\n");
+        printf("Cannot open files\n");
         return 1;
     }
 
     // Load keywords
-    char keywords[MAX_KEYWORDS][50];
+    char keywords[MAX_KEYWORDS][MAX_KEYWORD_LENGTH];
     int keywordCount[MAX_KEYWORDS] = {0};
     int totalKeywords = 0;
-    char buffer[50];
+    char buffer[MAX_KEYWORD_LENGTH];
 
-    while (fgets(buffer, 50, keywordFile)) {
+    while (fgets(buffer, MAX_KEYWORD_LENGTH, keywordFile)) {
         buffer[strcspn(buffer, "\n")] = 0;
         strcpy(keywords[totalKeywords++], buffer);
     }
@@ -43,8 +46,6 @@ int main() {
         }
         reports[totalReports++] = strdup(line);
     }
-
-    double start = omp_get_wtime();
 
      // Get number of threads
     #pragma omp parallel

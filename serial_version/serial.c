@@ -21,7 +21,6 @@ int main() {
 
     char line[MAX_LINE_LENGTH];
 
-    // Start timer
     clock_t start_time = clock();
 
     // Open the medical reports file
@@ -35,13 +34,11 @@ int main() {
     keyword_file = fopen("../keywords.txt", "r");
     if (keyword_file == NULL) {
         printf("Error: Cannot open keywords.txt\n");
-        fclose(report_file);
         return 1;
     }
 
     // Read all keywords from the file
     while (fgets(keywords[num_keywords], MAX_KEYWORD_LENGTH, keyword_file)) {
-        // Remove newline character if present
         keywords[num_keywords][strcspn(keywords[num_keywords], "\n")] = '\0';
         num_keywords++;
     }
@@ -49,7 +46,6 @@ int main() {
 
     // Read each line from the medical reports file
     while (fgets(line, MAX_LINE_LENGTH, report_file)) {
-        // For each keyword, check if it appears in the line
         for (int i = 0; i < num_keywords; i++) {
             if (strstr(line, keywords[i]) != NULL) {
                 keyword_counts[i]++;
@@ -57,6 +53,9 @@ int main() {
         }
     }
     fclose(report_file);
+    
+    clock_t end_time = clock();
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
     // Write the keyword counts to the output file
     output_file = fopen("../outputs/result_serial.txt", "w");
@@ -69,9 +68,6 @@ int main() {
     }
     fclose(output_file);
 
-    // Stop timer and calculate elapsed time
-    clock_t end_time = clock();
-    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
 
     // Write performance info to file
     performance_file = fopen("../outputs/performance.txt", "a");
@@ -80,7 +76,6 @@ int main() {
         fclose(performance_file);
     }
 
-    // Print summary to user
     printf("Done! Results saved to result_serial.txt\n");
     printf("Time taken: %.6f seconds\n", elapsed_time);
 
