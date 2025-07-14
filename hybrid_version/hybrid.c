@@ -1,4 +1,5 @@
 #include <mpi.h>
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +8,9 @@
 #define MAX_LINE_LEN 1000
 
 int main(int argc, char** argv) {
+
+    int num_threads = 4;
+    omp_set_num_threads(num_threads); 	
 
     int rank, size;
     MPI_Init(&argc, &argv);
@@ -20,7 +24,7 @@ int main(int argc, char** argv) {
     int totalLines = 0;
     char **allLines = NULL;
 
-    // Step 1: Process 0 reads keywords and reports
+    // Only rank 0 reads files
     if (rank == 0) {
         FILE *kf = fopen("../keywords.txt", "r");
         while (fgets(keywords[totalKeywords], 50, kf)) {
@@ -43,12 +47,11 @@ int main(int argc, char** argv) {
         fclose(rf);
     }
 
-    // Step 2: Broadcast keywords and total line count
+    // Broadcast data to all processes
     MPI_Bcast(&totalKeywords, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(keywords, MAX_KEYWORDS * 50, MPI_CHAR, 0, MPI_COMM_WORLD);
     MPI_Bcast(&totalLines, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    // Step 3: Send lines to each process
     int linesPerProcess = totalLines / size;
     int start = rank * linesPerProcess;
     int end = (rank == size - 1) ? totalLines : start + linesPerProcess;
@@ -78,33 +81,36 @@ int main(int argc, char** argv) {
 
     double t1 = MPI_Wtime();
 
-    // Step 4: Count keywords
     int localCount[MAX_KEYWORDS] = {0};
+
+    // Hybrid part: use OpenMP threads in each MPI process
+    #pragma omp parallel for
     for (int i = 0; i < myLinesCount; i++) {
         for (int k = 0; k < totalKeywords; k++) {
             if (strstr(myLines[i], keywords[k])) {
+                #pragma omp atomic
                 localCount[k]++;
             }
         }
     }
 
-    // Step 5: Reduce results
     MPI_Reduce(localCount, keywordCount, totalKeywords, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     double t2 = MPI_Wtime();
 
     if (rank == 0) {
-        FILE *out = fopen("../outputs/result_mpi.txt", "w");
+        FILE *out = fopen("../outputs/result_hybrid.txt", "w");
         for (int i = 0; i < totalKeywords; i++) {
             fprintf(out, "%s: %d\n", keywords[i], keywordCount[i]);
         }
         fclose(out);
 
         FILE *perf = fopen("../outputs/performance.txt", "a");
-        fprintf(perf, "MPI version time: %.6f seconds\t No. of Processors: %d\t No. of Threads: 1\n", t2 - t1, size);
+        fprintf(perf, "Hybrid version time (%d processes × OpenMP): %.6f sec\n", size, t2 - t1);
         fclose(perf);
 
-        printf("MPI Done in %.6f sec using %d processes\n", t2 - t1, size);
+        printf("Hybrid Done in %.6f sec using %d MPI processes + OpenMP threads\n", t2 - t1, size);
+
         for (int i = 0; i < totalLines; i++) free(allLines[i]);
         free(allLines);
     }

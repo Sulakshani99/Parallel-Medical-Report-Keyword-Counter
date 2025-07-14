@@ -76,3 +76,14 @@ mpicc mpi.c -o mpi
 mpirun -np 4 ./mpi
 ```
 
+### 4. Hybrid Version
+```bash
+# Compile code
+cd hybrid_version
+mpicc -fopenmp hybrid.c -o hybrid
+
+# Run code (using 2 MPI processes, each with 2 OpenMP threads)
+export OMP_NUM_THREADS=2
+mpirun -np 2 ./hybrid
+```
+
