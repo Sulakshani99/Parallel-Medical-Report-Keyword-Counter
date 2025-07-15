@@ -9,6 +9,7 @@
 #define MAX_KEYWORD_LENGTH 50
 
 int main(int argc, char** argv) {
+
     int num_threads = 4;
     omp_set_num_threads(num_threads);
 
@@ -147,6 +148,7 @@ int main(int argc, char** argv) {
     free(recvbuf);
     free(sendcounts);
     MPI_Finalize();
+    
     return 0;
 }
 
