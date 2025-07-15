@@ -2,5 +2,10 @@ Serial version time: 0.008159 seconds	 No. of Processors: 1	 No. of Threads: 1
 OpenMP version time: 0.008064 seconds	 No. of Processors: 1	 No. of Threads: 2 
 OpenMP version time: 0.007151 seconds	 No. of Processors: 1	 No. of Threads: 4 
 OpenMP version time: 0.007252 seconds	 No. of Processors: 1	 No. of Threads: 6 
+MPI version time: 0.004001 seconds	 No. of Processors: 2	 No. of Threads: 1
 MPI version time: 0.001698 seconds	 No. of Processors: 4	 No. of Threads: 1
+MPI version time: 0.000847 seconds	 No. of Processors: 8	 No. of Threads: 1
+Hybrid version time: 0.003504 seconds	 No. of Processes: 2	 No. of Threads: 2
 Hybrid version time: 0.001951 seconds	 No. of Processes: 4	 No. of Threads: 4
+Hybrid version time: 0.001029 seconds	 No. of Processes: 8	 No. of Threads: 2
+Hybrid version time: 0.001426 seconds	 No. of Processes: 8	 No. of Threads: 8

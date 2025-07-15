@@ -1,68 +1,49 @@
-import os
 import matplotlib.pyplot as plt
+import re
 
-# File paths
-result_files = {
-    'Serial': 'outputs/result_serial.txt',
-    'OpenMP': 'outputs/result_openmp.txt',
-    'MPI': 'outputs/result_mpi.txt',
-    'Hybrid': 'outputs/result_hybrid.txt',
-}
+# --- Performance Analysis Only ---
+perf_path = 'outputs/performance.txt'
+perf_data = []
+perf_pattern = re.compile(r"(Serial|OpenMP|MPI|Hybrid) version time: ([0-9.]+) seconds\s+No\. of Process(?:ors|es): (\d+)\s+No\. of Threads: (\d+)", re.I)
 
-# Read keyword counts from a result file
-def read_counts(filepath):
-    counts = {}
-    with open(filepath, 'r') as f:
-        for line in f:
-            if ':' in line:
-                key, value = line.strip().split(':', 1)
-                counts[key.strip()] = int(value.strip())
-    return counts
+with open(perf_path, 'r') as f:
+    for line in f:
+        m = perf_pattern.search(line)
+        if m:
+            method, time, procs, threads = m.groups()
+            label = method
+            if method == 'OpenMP':
+                label += f' ({threads} threads)'
+            elif method == 'MPI':
+                label += f' ({procs} procs)'
+            elif method == 'Hybrid':
+                label += f' ({procs}x{threads})'
+            perf_data.append({'label': label, 'method': method, 'time': float(time)})
 
-# Read all results
-data = {name: read_counts(path) for name, path in result_files.items()}
+# Find the fastest serial time for speedup calculation
+serial_times = [d['time'] for d in perf_data if d['method'].lower() == 'serial']
+serial_time = min(serial_times) if serial_times else 1.0
+for d in perf_data:
+    d['speedup'] = serial_time / d['time'] if d['time'] > 0 else 0
 
-# Serial is ground truth
-serial_counts = data['Serial']
-keywords = list(serial_counts.keys())
+# --- Plotting ---
+fig, ax1 = plt.subplots(figsize=(10, 6))
 
-# Calculate accuracy metrics
-def calculate_metrics(reference, test):
-    total = len(reference)
-    exact_matches = sum(1 for k in reference if reference[k] == test.get(k, None))
-    percent_match = (exact_matches / total) * 100
-    mae = sum(abs(reference[k] - test.get(k, 0)) for k in reference) / total
-    return percent_match, mae
-
-metrics = {}
-for name in ['OpenMP', 'MPI', 'Hybrid']:
-    percent_match, mae = calculate_metrics(serial_counts, data[name])
-    metrics[name] = {'percent_match': percent_match, 'mae': mae}
-
-# Plotting
-fig, ax1 = plt.subplots(figsize=(8, 5))
-
-implementations = list(metrics.keys())
-percent_matches = [metrics[name]['percent_match'] for name in implementations]
-maes = [metrics[name]['mae'] for name in implementations]
+labels = [d['label'] for d in perf_data]
+times = [d['time'] for d in perf_data]
+speedups = [d['speedup'] for d in perf_data]
+x_perf = range(len(labels))
 
 bar_width = 0.35
-x = range(len(implementations))
+ax1.bar(x_perf, times, width=bar_width, label='Execution Time (s)', color='tab:green')
+ax1.set_ylabel('Execution Time (s)', color='tab:green')
+ax1.set_xticks(x_perf)
+ax1.set_xticklabels(labels, rotation=30, ha='right')
 
-# Bar for percent match
-ax1.bar(x, percent_matches, width=bar_width, label='Exact Match (%)', color='tab:blue')
-ax1.set_ylabel('Exact Match (%)', color='tab:blue')
-ax1.set_ylim(0, 105)
-ax1.set_xticks(x)
-ax1.set_xticklabels(implementations)
-
-# Twin axis for MAE
 ax2 = ax1.twinx()
-ax2.bar([i + bar_width for i in x], maes, width=bar_width, label='Mean Absolute Error', color='tab:orange')
-ax2.set_ylabel('Mean Absolute Error', color='tab:orange')
+ax2.plot(x_perf, speedups, label='Speedup', color='tab:red', marker='o')
+ax2.set_ylabel('Speedup (vs Serial)', color='tab:red')
 
-# Title and legend
-plt.title('Accuracy Comparison of Keyword Counting Implementations')
-fig.legend(loc='upper right', bbox_to_anchor=(1,1), bbox_transform=ax1.transAxes)
-plt.tight_layout()
+ax1.set_title('Performance Analysis: Execution Time and Speedup')
+fig.tight_layout(rect=[0, 0, 1, 0.97])
 plt.show() 
