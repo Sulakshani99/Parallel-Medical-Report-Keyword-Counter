@@ -9,3 +9,6 @@ Hybrid version time: 0.003504 seconds	 No. of Processes: 2	 No. of Threads: 2
 Hybrid version time: 0.001951 seconds	 No. of Processes: 4	 No. of Threads: 4
 Hybrid version time: 0.001029 seconds	 No. of Processes: 8	 No. of Threads: 2
 Hybrid version time: 0.001426 seconds	 No. of Processes: 8	 No. of Threads: 8
+Hybrid version time: 0.048495 seconds	 No. of Processes: 4	 No. of Threads: 4
+Hybrid version time: 0.001929 seconds	 No. of Processes: 8	 No. of Threads: 4
+Hybrid version time: 0.003912 seconds	 No. of Processes: 4	 No. of Threads: 4
